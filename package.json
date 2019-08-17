@@ -1,0 +1,29 @@
+{
+  "name": "@bcg-ts/cache",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "author": {
+    "name": "Brandon Garcia",
+    "email": "bcgarcia44@gmail.com"
+  },
+  "license": "MIT",
+  "typings": "dist/index.d.ts",
+  "scripts": {
+    "compile": "tsc"
+  },
+  "directories": {
+    "lib": "."
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/brandon-garcia/ts-cache.git"
+  },
+  "dependencies": {
+    "redis": "2.8.0"
+  },
+  "devDependencies": {
+    "@types/redis": "2.8.10",
+    "typescript": "3.4.5"
+  }
+}
