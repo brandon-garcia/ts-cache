@@ -45,6 +45,7 @@ exports.connectRedis = function (config) {
     var redisExists = util_1.promisify(client.exists).bind(client);
     var redisSetEx = util_1.promisify(client.setex).bind(client);
     var redisSet = util_1.promisify(client.set).bind(client);
+    var redisFlushDB = util_1.promisify(client.flushdb).bind(client);
     return {
         delete: function (id) { return __awaiter(_this, void 0, void 0, function () { var _a; return __generator(this, function (_b) {
             switch (_b.label) {
@@ -76,6 +77,14 @@ exports.connectRedis = function (config) {
                 case 0:
                     _a = 1;
                     return [4, redisExists(id)];
+                case 1: return [2, _a === (_b.sent())];
+            }
+        }); }); },
+        deleteAll: function () { return __awaiter(_this, void 0, void 0, function () { var _a; return __generator(this, function (_b) {
+            switch (_b.label) {
+                case 0:
+                    _a = "OK";
+                    return [4, redisFlushDB()];
                 case 1: return [2, _a === (_b.sent())];
             }
         }); }); },

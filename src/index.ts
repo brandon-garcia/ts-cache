@@ -6,10 +6,11 @@ export type RedisConfig = ClientOpts;
 type AsyncFn<T, R> = (param: T) => Promise<R>;
 
 export interface ICache {
-  readonly delete: (id: string) => Promise<boolean>;
-  readonly get: (id: string) => Promise<string>;
-  readonly has: (id: string) => Promise<boolean>;
-  readonly set: (id: string, value: string, ttl?: number) => Promise<boolean>;
+  readonly delete: (key: string) => Promise<boolean>;
+  readonly deleteAll: () => Promise<boolean>;
+  readonly get: (key: string) => Promise<string|undefined>;
+  readonly has: (key: string) => Promise<boolean>;
+  readonly set: (key: string, value: string, timeToLive?: number) => Promise<boolean>;
 }
 
 export const connectRedis = (config: RedisConfig): ICache => {
@@ -24,11 +25,14 @@ export const connectRedis = (config: RedisConfig): ICache => {
   const redisExists: AsyncFn<string, number> =
     promisify(client.exists).bind(client);
 
-  const redisSetEx: (id: string, ttl: number, value: string) => Promise<string> =
+  const redisSetEx: (key: string, timeToLive: number, value: string) => Promise<string> =
     promisify(client.setex).bind(client);
 
-  const redisSet: (id: string, value: string) => Promise<string> =
-    promisify(client.set).bind(client) as (id: string, value: string) => Promise<string>;
+  const redisSet: (key: string, value: string) => Promise<string> =
+    promisify(client.set).bind(client) as (key: string, value: string) => Promise<string>;
+
+  const redisFlushDB: () => Promise<string> =
+    promisify(client.flushdb).bind(client) as () => Promise<string>;
 
   return {
     delete: async (id: string) => 1 === (await redisDelete(id)),
@@ -43,6 +47,8 @@ export const connectRedis = (config: RedisConfig): ICache => {
     },
 
     has: async (id: string) => 1 === (await redisExists(id)),
+
+    deleteAll: async () => "OK" === (await redisFlushDB()),
   };
 };
 
